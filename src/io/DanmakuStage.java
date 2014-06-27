@@ -14,7 +14,7 @@ public class DanmakuStage extends Stage {
 	
 	public DanmakuStage() {
 		super();
-		String[] cmds = new String[]{"FIRE", "WAIT 0.25"};
+		String[] cmds = new String[]{"FIRE", "WAIT 0.08", "LOOP 2 10", "WAIT 1"};
 		NewtonianBehavior behavior = new NewtonianBehavior(75, 0, 2, -1);
 		behavior.minAV = 0;
 		PeriodicBehavior behavior2 = new PeriodicBehavior(4, 200, false);

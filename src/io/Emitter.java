@@ -22,13 +22,17 @@ public class Emitter extends Entity {
 	private Behavior[] bulletBehaviors;
 	private Behavior[] emmiterBehaviors;
 	private int currentCmd;
+	
+	//For commands
 	private float timer;
+	private int loopCount;
 	
 	public Emitter(float x, float y, String[] commands, 
 			EmitterPattern pattern, Behavior[] bulletBehaviors, Behavior[] emmiterBehaviors) {
 		super(x, y);
 		currentCmd = 0;
 		timer = -1;
+		loopCount = 0;
 		angle = -1.5708f;
 		angVeloc = 0.0f;
 		this.commands = commands;
@@ -59,6 +63,15 @@ public class Emitter extends Entity {
 		} else if(timer < 0 && cmd.startsWith("WAIT")) {
 			float time = Float.parseFloat(cmd.split(" ")[1]);
 			timer = time;
+		} else if(cmd.startsWith("LOOP")) {
+			String[] split = cmd.split(" ");
+			loopCount++;
+			if(loopCount >= Integer.parseInt(split[2])) {
+				nextCmd();
+				loopCount = 0;
+			} else {
+				currentCmd -= Integer.parseInt(split[1]);
+			}
 		}
 		
 		//Timer

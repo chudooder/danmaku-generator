@@ -2,8 +2,11 @@ package io;
 
 import java.util.List;
 
+import org.newdawn.slick.Color;
+
 import chu.engine.Entity;
 import chu.engine.Game;
+import chu.engine.anim.Renderer;
 
 /**
  * Shoots bullets. Bullet type is determined by its BulletData field.
@@ -13,23 +16,41 @@ import chu.engine.Game;
 public class Emitter extends Entity {
 	
 	private float angle;
+	private float angVeloc;
 	private String[] commands;
 	private EmitterPattern pattern;
-	private BulletData bulletData;
+	private Behavior[] bulletBehaviors;
+	private Behavior[] emmiterBehaviors;
 	private int currentCmd;
 	private float timer;
 	
-	public Emitter(float x, float y, String[] commands, EmitterPattern pattern, BulletData bulletData) {
+	public Emitter(float x, float y, String[] commands, 
+			EmitterPattern pattern, Behavior[] bulletBehaviors, Behavior[] emmiterBehaviors) {
 		super(x, y);
 		currentCmd = 0;
 		timer = -1;
-		angle = -90;
+		angle = -1.5708f;
+		angVeloc = 0.0f;
 		this.commands = commands;
 		this.pattern = pattern;
-		this.bulletData = bulletData;
+		this.bulletBehaviors = bulletBehaviors;
+		this.emmiterBehaviors = emmiterBehaviors;
 	}
 	
 	public void beginStep() {
+		//Behaviors
+		float dx = 0, dy = 0, da = 0;
+		for(Behavior behavior : emmiterBehaviors) {
+			Location loc = behavior.doBehavior(x, y, angle);
+			dx += loc.x;
+			dy += loc.y;
+			da += loc.angle;
+		}
+		float delta = Game.getDeltaSeconds();
+		x += dx * delta;
+		y += dy * delta;
+		angle += da * delta;
+		
 		//Parse commands
 		String cmd = commands[currentCmd];
 		if(cmd.startsWith("FIRE")) {
@@ -57,21 +78,28 @@ public class Emitter extends Entity {
 		List<Location> locations = pattern.getLocations();
 		for(Location location : locations) {
 			Bullet bullet;
+			Behavior[] copy = new Behavior[bulletBehaviors.length];
+			for(int i=0; i<copy.length; i++) {
+				copy[i] = bulletBehaviors[i].copy();
+			}
 			if(!location.absolute) { 
 				bullet = new Bullet(
 						x + location.x,
 						y + location.y,
 						angle + location.angle,
-						bulletData);
+						copy);
 			} else {
 				bullet = new Bullet(
 						location.x,
 						location.y,
 						location.angle,
-						bulletData);
+						copy);
 			}
 			stage.addEntity(bullet);
 		}
 	}
 	
+	public void render() {
+		Renderer.drawCircle(x, y, 3, 8, false, Color.blue);
+	}
 }

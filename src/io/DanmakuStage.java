@@ -14,10 +14,13 @@ public class DanmakuStage extends Stage {
 	
 	public DanmakuStage() {
 		super();
-		String[] cmds = new String[]{"FIRE", "WAIT 0.5"};
-		BulletData data = new BulletData(50, 100, 2, -1);
-		data.minAV = 0;
-		addEntity(new Emitter(320, 240, cmds, new SpreadPattern(6.283f, 24), data));
+		String[] cmds = new String[]{"FIRE", "WAIT 0.25"};
+		NewtonianBehavior behavior = new NewtonianBehavior(75, 0, 2, -1);
+		behavior.minAV = 0;
+		PeriodicBehavior behavior2 = new PeriodicBehavior(4, 200, false);
+		Behavior[] b = new Behavior[]{behavior};
+		Behavior[] b2 = new Behavior[]{behavior2};
+		addEntity(new Emitter(320, 400, cmds, new SpreadPattern(6.283f, 24), b, b2));
 	}
 
 	@Override

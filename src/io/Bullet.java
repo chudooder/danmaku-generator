@@ -11,51 +11,38 @@ import chu.engine.anim.Transform;
 public class Bullet extends Entity {
 	
 	private static Texture bulletTex;
-	
-	private float linVeloc;
-	private float linAccel;
-	private float angVeloc;
-	private float angAccel;
-	private float minLV, maxLV, minAV, maxAV;
+
 	private float angle;
+	private Behavior[] behaviors;
 	
 	static {
 		bulletTex = Resources.getTexture("res/img/bullet.png");
 	}
 
-	public Bullet(float x, float y, float angle, BulletData initData) {
+	public Bullet(float x, float y, float angle, Behavior[] behaviors) {
 		super(x, y);
-		linVeloc = initData.linVeloc;
-		linAccel = initData.linAccel;
-		angVeloc = initData.angVeloc;
-		angAccel = initData.angAccel;
-		minLV = initData.minLV;
-		maxLV = initData.maxLV;
-		minAV = initData.minAV;
-		maxAV = initData.maxAV;
 		this.angle = angle;
+		this.behaviors = behaviors;
 	}
 	
 	public void beginStep() {
-		/* Bullet velocity and position */
+		float dx = 0, dy = 0, da = 0;
+		for(Behavior behavior : behaviors) {
+			Location loc = behavior.doBehavior(x, y, angle);
+			dx += loc.x;
+			dy += loc.y;
+			da += loc.angle;
+		}
 		float delta = Game.getDeltaSeconds();
-		linVeloc += linAccel*delta;
-		angVeloc += angAccel*delta;
-		linVeloc = clamp(linVeloc, minLV, maxLV);
-		angVeloc = clamp(angVeloc, minAV, maxAV);
-		angle += angVeloc*delta;
-		x += linVeloc * Math.cos(angle) * delta;
-		y += linVeloc * Math.sin(angle) * delta;
+		x += dx * delta;
+		y += dy * delta;
+		angle += da * delta;
 	}
 	
 	public void endStep() {
 		if(x < 0 || x > 640 || y < 0 || y > 480) {
 			destroy();
 		}
-	}
-	
-	private float clamp(float val, float min, float max) {
-		return Math.max(min, Math.min(max, val));
 	}
 	
 	public void render() {

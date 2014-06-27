@@ -1,4 +1,6 @@
-package io;
+package io.pattern;
+
+import io.Location;
 
 import java.util.List;
 

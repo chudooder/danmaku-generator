@@ -1,5 +1,8 @@
 package io;
 
+import io.pattern.Behavior;
+import io.pattern.EmitterPattern;
+
 import java.util.List;
 
 import org.newdawn.slick.Color;

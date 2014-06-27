@@ -1,5 +1,6 @@
-package io;
+package io.pattern;
 
+import io.Location;
 import chu.engine.Entity;
 
 public interface Behavior {

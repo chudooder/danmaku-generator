@@ -1,5 +1,8 @@
 package io;
 
+import io.pattern.Behavior;
+
+import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 
 import chu.engine.Entity;
@@ -7,6 +10,7 @@ import chu.engine.Game;
 import chu.engine.Resources;
 import chu.engine.anim.Renderer;
 import chu.engine.anim.Transform;
+import chu.engine.collision.HitboxFactory;
 
 public class Bullet extends Entity {
 	
@@ -23,6 +27,8 @@ public class Bullet extends Entity {
 		super(x, y);
 		this.angle = angle;
 		this.behaviors = behaviors;
+		renderDepth = 0.5f;
+		hitbox = HitboxFactory.rectangle(4, 4);
 	}
 	
 	public void beginStep() {
@@ -37,6 +43,7 @@ public class Bullet extends Entity {
 		x += dx * delta;
 		y += dy * delta;
 		angle += da * delta;
+		hitbox.setLocation(x+6, y+6);
 	}
 	
 	public void endStep() {
@@ -48,7 +55,8 @@ public class Bullet extends Entity {
 	public void render() {
 		Transform t = new Transform();
 		t.setRotation(angle);
-		Renderer.render(bulletTex, 0, 0, 1, 1, x-8, y-8, x+8, y+8, renderDepth, t);
+		Renderer.render(bulletTex, 0, 0, 1, 1, x, y, x+16, y+16, renderDepth, t);
+//		Renderer.drawRectangle(x+6, y+6, x+10, y+10, 0.0f, Color.red);
 	}
 
 }

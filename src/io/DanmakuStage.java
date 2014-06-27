@@ -1,5 +1,10 @@
 package io;
 
+import io.pattern.Behavior;
+import io.pattern.NewtonianBehavior;
+import io.pattern.PeriodicBehavior;
+import io.pattern.SpreadPattern;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +19,15 @@ public class DanmakuStage extends Stage {
 	
 	public DanmakuStage() {
 		super();
-		String[] cmds = new String[]{"FIRE", "WAIT 0.08", "LOOP 2 10", "WAIT 1"};
-		NewtonianBehavior behavior = new NewtonianBehavior(75, 0, 2, -1);
+		String[] cmds = new String[]{"FIRE", "WAIT 0.08"};
+		NewtonianBehavior behavior = new NewtonianBehavior(200, 0, 2, -1);
 		behavior.minAV = 0;
-		PeriodicBehavior behavior2 = new PeriodicBehavior(4, 200, false);
+		PeriodicBehavior behavior2 = new PeriodicBehavior(2, 50, false);
 		Behavior[] b = new Behavior[]{behavior};
 		Behavior[] b2 = new Behavior[]{behavior2};
 		addEntity(new Emitter(320, 400, cmds, new SpreadPattern(6.283f, 24), b, b2));
+	
+		addEntity(new Player(320, 20));
 	}
 
 	@Override
@@ -67,7 +74,6 @@ public class DanmakuStage extends Stage {
 				qt.retrieve(list, e);
 				for(Entity other : list) {
 					if(e != other && other.hitbox.intersects(e.hitbox)) {
-						System.out.println(e + " " + other);
 						((Collidable)e).doCollisionWith(other);
 					}
 				}

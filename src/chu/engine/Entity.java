@@ -32,7 +32,6 @@ public abstract class Entity implements Comparable<Entity> {
 	
 	public void onStep() {
 		if(sprite != null) sprite.update();
-		if(hitbox != null) hitbox.setLocation(x, y);
 	}
 	
 	public void beginStep() {
